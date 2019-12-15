@@ -1,0 +1,251 @@
+<script>
+// vim: ts=3
+
+var MUSICLIST = new MusicList();
+
+var VrvOptions = {
+	scale: 90,
+	spacingNonLinear: 0
+}
+
+MUSICLIST.m_notationCallback = function (score) {
+	if (!score) {
+		return;
+	}
+	var element = document.querySelector("#example");
+	if (!element) {
+		return;
+	}
+	element.textContent = score;
+
+	var options = VrvOptions;
+	options.source = "example";
+	displayHumdrum(options)
+	
+	displayButtonList();
+}
+
+
+
+//////////////////////////////
+//
+// displayButtonList --
+//
+
+function displayButtonList() {
+	var element = document.querySelector("#button-list");
+	if (!element) {
+		return;
+	}
+	element.style.display = "block";
+}
+
+
+
+//////////////////////////////
+//
+// hideButtonList --
+//
+
+function hideButtonList() {
+	var element = document.querySelector("#button-list");
+	if (!element) {
+		return;
+	}
+	element.style.display = "none";
+}
+
+
+
+//////////////////////////////
+//
+// processDigit -- Apply as a duration or as a clef line.
+//
+
+function processDigit(digit, event) {
+	if (MUSICLIST.m_list.length == 0) {
+		// initialize the rhythm for notes
+		switch (digit) {
+			case 0: MUSICLIST.m_rhythm = 0; break;  // breve
+			case 1: MUSICLIST.m_rhythm = 1; break;  // whole (semibreve)
+			case 2: MUSICLIST.m_rhythm = 2; break;  // half (minim)
+			case 4: MUSICLIST.m_rhythm = 4; break;  // quarter (semiminim)
+			case 6: MUSICLIST.m_rhythm = 6; break;  // sixteenth (semifusa)
+			case 7: MUSICLIST.m_rhythm = 7; break;  // maxima
+			case 8: MUSICLIST.m_rhythm = 8; break;  // eighth (fusa)
+			case 9: MUSICLIST.m_rhythm = 9; break;  // long
+		}
+		return;
+	}
+	index = MUSICLIST.m_index;
+	var ending = false;
+	if (index < 0) {
+		index = MUSICLIST.m_list.length - 1;
+		ending = true;
+	}
+	var item = MUSICLIST.m_list[index];
+	if (item.m_type === "clef") {
+		if ((digit >= 1) && (digit <= 5)) {
+			item.m_clefLine = digit;
+		}
+		MUSICLIST.runNotationCallback();
+		return;
+	} else if (ending) {
+		switch (digit) {
+			case 0: MUSICLIST.m_rhythm = 0; break;  // breve
+			case 1: MUSICLIST.m_rhythm = 1; break;  // whole (semibreve)
+			case 2: MUSICLIST.m_rhythm = 2; break;  // half (minim)
+			case 4: MUSICLIST.m_rhythm = 4; break;  // quarter (semiminim)
+			case 6: MUSICLIST.m_rhythm = 6; break;  // sixteenth (semifusa)
+			case 7: MUSICLIST.m_rhythm = 7; break;  // maxima
+			case 8: MUSICLIST.m_rhythm = 8; break;  // eighth (fusa)
+			case 9: MUSICLIST.m_rhythm = 9; break;  // long
+		}
+	} else if ((item.m_type === "note") ||
+			     (item.m_type === "rest")) {
+		if (!ending) {
+			switch (digit) {
+				case 0:	// breve
+					item.m_rhythm = digit;
+					MUSICLIST.m_index += 1;
+					MUSICLIST.m_rhythm = digit;
+					MUSICLIST.runNotationCallback();
+					break;
+				case 1: // whole (semibreve)
+					item.m_rhythm = digit;
+					MUSICLIST.m_index += 1;
+					MUSICLIST.m_rhythm = digit;
+					MUSICLIST.runNotationCallback();
+					break;
+				case 2:	// half (minim)
+					item.m_rhythm = digit;
+					MUSICLIST.m_index += 1;
+					MUSICLIST.m_rhythm = digit;
+					MUSICLIST.runNotationCallback();
+					break;
+				case 4:	// quarter (semiminim)
+					item.m_rhythm = digit;
+					MUSICLIST.m_index += 1;
+					MUSICLIST.m_rhythm = digit;
+					MUSICLIST.runNotationCallback();
+					break;
+				case 6:	// sixteenth (semifusa)
+					item.m_rhythm = digit;
+					MUSICLIST.m_index += 1;
+					MUSICLIST.m_rhythm = digit;
+					MUSICLIST.runNotationCallback();
+					break;
+				case 7:	// maxima
+					item.m_rhythm = digit;
+					MUSICLIST.m_index += 1;
+					MUSICLIST.m_rhythm = digit;
+					MUSICLIST.runNotationCallback();
+					break;
+				case 8:	// eighth note (fusa)
+					item.m_rhythm = digit;
+					MUSICLIST.m_index += 1;
+					MUSICLIST.m_rhythm = digit;
+					MUSICLIST.runNotationCallback();
+					break;
+				case 9:	 // long
+					item.m_rhythm = digit;
+					MUSICLIST.m_index += 1;
+					MUSICLIST.m_rhythm = digit;
+					MUSICLIST.runNotationCallback();
+					break;
+				case 9:	 // maxima
+			}
+			if (MUSICLIST.m_index >= MUSICLIST.m_list.length) {
+				MUSICLIST.m_index = -1;
+			}
+		}
+	}
+}
+
+
+
+//////////////////////////////
+//
+// processDotKey -- Apply a dot key.
+//
+
+function processDotKey() {
+	if (MUSICLIST.m_list.length == 0) {
+		return;
+	}
+	index = MUSICLIST.m_index;
+	if (index < 0) {
+		index = MUSICLIST.m_list.length - 1;
+	}
+	var item = MUSICLIST.m_list[index];
+	if (item.m_type === "note") {
+		item.m_dot = !item.m_dot;
+		MUSICLIST.runNotationCallback();
+		return;
+	}
+}
+
+
+
+//////////////////////////////
+//
+// copyToClipboard --
+//
+
+function copyToClipboard(data) {
+  element = document.createElement('textarea');
+  element.value = data;
+  document.body.appendChild(element);
+  element.select();
+  document.execCommand('copy');
+  document.body.removeChild(element);
+};
+
+
+
+//////////////////////////////
+//
+// copyHumdrum -- Copy Humdrum data to system clipboard/pasteboard.
+//
+
+function copyHumdrum() {
+	var opts = {};
+	opts.export = true;
+	var data = MUSICLIST.getHumdrumScore(opts);
+	copyToClipboard(data);
+}
+
+
+
+//////////////////////////////
+//
+// copyMei -- Copy MEI data to system clipboard/pasteboard.
+//
+
+function copyMei() {
+	var opts = {};
+	opts.export = true;
+	var data = MUSICLIST.getHumdrumScore(opts);
+	var options = {};
+	options.type = "MEI";
+	options.humType = 0;
+	vrvToolkit.setOptions(options);
+	vrvToolkit.loadData(data);
+	var data2 = vrvToolkit.getMEI(0, 1);
+	copyToClipboard(data2);
+}
+
+
+
+//////////////////////////////
+//
+// clearData --
+//
+
+function clearData() {
+	MUSICLIST.clear();
+}
+
+
+</script>
+

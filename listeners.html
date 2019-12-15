@@ -1,0 +1,356 @@
+<script>
+// vim: ts=3
+
+var AKey      = 65;
+var BKey      = 66;
+var CKey      = 67;
+var DKey      = 68;
+var EKey      = 69;
+var FKey      = 70;
+var GKey      = 71;
+var HKey      = 72;
+var IKey      = 73;
+var JKey      = 74;
+var KKey      = 75;
+var LKey      = 76;
+var MKey      = 77;
+var NKey      = 78;
+var OKey      = 79;
+var PKey      = 80;
+var QKey      = 81;
+var RKey      = 82;
+var SKey      = 83;
+var TKey      = 84;
+var UKey      = 85;
+var VKey      = 86;
+var WKey      = 87;
+var XKey      = 88;
+var YKey      = 89;
+var ZKey      = 90;
+var ZeroKey   = 48;
+var OneKey    = 49;
+var TwoKey    = 50;
+var ThreeKey  = 51;
+var FourKey   = 52;
+var FiveKey   = 53;
+var SixKey    = 54;
+var SevenKey  = 55;
+var EightKey  = 56;
+var NineKey   = 57;
+var PgUpKey   = 33;
+var PgDnKey   = 34;
+var EndKey    = 35;
+var HomeKey   = 36;
+var LeftKey   = 37;
+var UpKey     = 38;
+var RightKey  = 39;
+var DownKey   = 40;
+var EnterKey  = 13;
+var SpaceKey  = 32;
+var SlashKey  = 191;
+var EscKey    = 27;
+var BackKey   = 8;
+var TabKey    = 9;
+var CommaKey  = 188;
+var MinusKey  = 189;
+var DotKey    = 190;
+var SemiColonKey = 186;
+var BackQuoteKey   = 192;
+var SingleQuoteKey = 222;
+
+
+//////////////////////////////
+//
+// keydown event listener --
+//
+
+window.addEventListener("keydown", processKeypress, true);
+
+
+
+//////////////////////////////
+//
+// click event listener --
+//
+
+window.addEventListener("click", clickHandler);
+
+
+
+/////////////////////////////
+//
+// DOMContentLoaded event listener --
+//
+
+var notationObserver = null;
+window.addEventListener("DOMContentLoaded", function () {
+	var element = document.querySelector("#example");
+	if (!element) {
+		return;
+	}
+	var options = {
+			  attributes: true,
+			  childList: true,
+			  subtree: true
+	};
+	displayNotation();
+	/* Mutation observer method (using callback system instead)
+	notationObserver = new MutationObserver(displayNotation);
+	notationObserver.observe(element, options);
+	*/
+});
+
+
+
+///////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////
+//
+// displayNotation --
+//
+
+function displayNotation() {
+	var options = VrvOptions;
+	options.source = "example";
+	displayHumdrum(options)
+}
+
+
+
+//////////////////////////////
+//
+// processKeypress --
+//
+
+function processKeypress(event) {
+	if (event.metaKey) {
+		return;
+	}
+
+	var state;
+	if ((MUSICLIST.m_index >= 0) && (event.key.length == 1)) {
+		if ((event.key >= '0') && (event.key <= '9')) {
+			processDigit(event.key - '0', event);
+			event.preventDefault();
+			return;
+		}
+
+		state = MUSICLIST.addTextToCurrentItem(event.key);
+		if (state) {
+			event.preventDefault();
+			return;
+		}
+	}
+	if ((MUSICLIST.m_index >= 0) && (event.keyCode == BackKey)) {
+		if (event.shiftKey) {
+			MUSICLIST.clearTextOnCurrentItem();
+		} else {
+			MUSICLIST.deleteCharacterOnCurrentItem();
+		}
+		event.preventDefault();
+		return;
+	}
+
+	switch (event.keyCode) {
+
+		case CKey:          // Add a C pitch
+			if (event.shiftKey) {
+				MUSICLIST.addPitchFar(C_PitchClass);
+			} else {
+				MUSICLIST.addPitchNear(C_PitchClass);
+			}
+			event.preventDefault();
+			break;
+
+		case DKey:          // Add a D pitch
+			if (event.shiftKey) {
+				MUSICLIST.addPitchFar(D_PitchClass);
+			} else {
+				MUSICLIST.addPitchNear(D_PitchClass);
+			}
+			event.preventDefault();
+			break;
+
+		case EKey:          // Add a E pitch
+			if (event.shiftKey) {
+				MUSICLIST.addPitchFar(E_PitchClass);
+			} else {
+				MUSICLIST.addPitchNear(E_PitchClass);
+			}
+			event.preventDefault();
+			break;
+
+		case FKey:          // Add a F pitch
+			if (event.shiftKey) {
+				MUSICLIST.addPitchFar(F_PitchClass);
+			} else {
+				MUSICLIST.addPitchNear(F_PitchClass);
+			}
+			event.preventDefault();
+			break;
+
+		case GKey:          // Add a G pitch
+			if (event.shiftKey) {
+				MUSICLIST.addPitchFar(G_PitchClass);
+			} else {
+				MUSICLIST.addPitchNear(G_PitchClass);
+			}
+			event.preventDefault();
+			break;
+
+		case AKey:          // Add a A pitch
+			if (event.shiftKey) {
+				MUSICLIST.addPitchFar(A_PitchClass);
+			} else {
+				MUSICLIST.addPitchNear(A_PitchClass);
+			}
+			event.preventDefault();
+			break;
+
+		case BKey:          // Add a B pitch
+			if (event.shiftKey) {
+				MUSICLIST.addPitchFar(B_PitchClass);
+			} else {
+				MUSICLIST.addPitchNear(B_PitchClass);
+			}
+			event.preventDefault();
+			break;
+
+		case RKey:          // Add a rest
+			MUSICLIST.addRest();
+			event.preventDefault();
+			break;
+
+		case DotKey: // deal with dot key (add dot to data).
+			processDotKey();
+			event.preventDefault();
+			break;
+
+		case ZeroKey: // deal with "0" key
+			processDigit(0, event);
+			event.preventDefault();
+			break;
+
+		case OneKey: // deal with "1" key
+			processDigit(1, event);
+			event.preventDefault();
+			break;
+
+		case TwoKey: // deal with "2" key
+			processDigit(2, event);
+			event.preventDefault();
+			break;
+
+		case ThreeKey: // deal with "3" key
+			processDigit(3, event);
+			event.preventDefault();
+			break;
+
+		case FourKey: // deal with "4" key
+			processDigit(4, event);
+			event.preventDefault();
+			break;
+
+		case FiveKey: // deal with "5" key
+			processDigit(5, event);
+			event.preventDefault();
+			break;
+
+		case SixKey: // deal with "6" key
+			processDigit(6, event);
+			event.preventDefault();
+			break;
+
+		case SevenKey: // deal with "7" key
+			processDigit(7, event);
+			event.preventDefault();
+			break;
+
+		case EightKey: // deal with "8" key
+			processDigit(8, event);
+			event.preventDefault();
+			break;
+
+		case NineKey: // deal with "9" key
+			processDigit(9, event);
+			event.preventDefault();
+			break;
+
+		case BackKey:  // Remove a pitch
+			MUSICLIST.removeLastItem();
+			event.preventDefault();
+			break;
+
+		case LeftKey: // Select previous item
+			MUSICLIST.selectBackward();
+			event.preventDefault();
+			break;
+
+		case TabKey: // select next/previous item
+			if (event.shiftKey) {
+				MUSICLIST.selectBackward();
+			} else {
+				MUSICLIST.selectForward();
+			}
+			event.preventDefault();
+			break;
+
+		case RightKey: // Select next item
+			MUSICLIST.selectForward();
+			event.preventDefault();
+			break;
+
+		case UpKey: // transpose current note up
+			// make shift move it an octave up
+			if (event.shiftKey) {
+				MUSICLIST.raisePitch(7);
+			} else {
+				MUSICLIST.raisePitch(1);
+			}
+			event.preventDefault();
+			break;
+
+		case DownKey: // transpose current note down
+			// make shift move it an octave down
+			if (event.shiftKey) {
+				MUSICLIST.lowerPitch(7);
+			} else {
+				MUSICLIST.lowerPitch(1);
+			}
+			event.preventDefault();
+			break;
+
+		case EndKey: // go to end of list
+			MUSICLIST.goToEndOfList();
+			event.preventDefault();
+			break;
+
+	}
+}
+
+
+
+//////////////////////////////
+//
+// click event Handler -- Event delegation to keep track of 
+//   note selection.
+//
+
+function clickHandler(event) {
+	var target = event.target;
+	var matches;
+	while (target) {
+		var name = target.nodeName;
+		var id = target.id;
+		if (name === "g") {
+			if (matches = id.match(/-.*L(\d+)/)) {
+				MUSICLIST.selectItemByLine(parseInt(matches[1]));
+				break;
+			}
+		}
+		target = target.parentNode;
+	}
+}
+
+</script>
