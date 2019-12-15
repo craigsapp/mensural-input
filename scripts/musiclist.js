@@ -358,6 +358,12 @@ MusicList.prototype.addTextToCurrentItem = function (text) {
 	}
 	var item = list[index];
 	item.m_text += text;
+	if (text === "-") {
+		this.m_index += 1;
+		if (this.m_index >= this.m_list) {
+			this.m_index = -1;
+		}
+	}
 	this.runNotationCallback();
 	return true;
 }
