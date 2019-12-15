@@ -62,10 +62,10 @@
 		     <span class="hi">6</span> semifusa,
 		     <span class="hi">0</span> breve,
 		     <span class="hi">9</span> long,
-		     <span class="hi">7</span> maxima.
-		<li><i>Interleaved method</i>: type (new) rhythm before adding a note.  The default rhythm is whole note (semibreve).  First note's rhythm should be typed before adding clef.</li>
-		<li><i>Second-pass method</i>: type pitches first, then select first note and type rhythms to update note rhythms.</li>
-		<li><i>Selective second-pass method</i>: type most common rhythm, then clef, then notes, then click on notes that need rhythms to fix.  Typing rhythm number will change rhythm and advance to next note.</li>
+		     <span class="hi">7</span> maxima. </li>
+		<li> <i>Interleaved method</i>: type (new) rhythm before adding a note.  The default rhythm is whole note (semibreve).  First note's rhythm should be typed before adding clef.</li>
+		<li> <i>Second-pass method</i>: type pitches first, then select first note and type rhythms to update note rhythms.</li>
+		<li> <i>Selective second-pass method</i>: type most common rhythm, then clef, then notes, then click on notes that need rhythms to fix.  Typing rhythm number will change rhythm and advance to next note.</li>
 		<li> left/right arrow keys or tab/shift-tab moves to next/previous note/rest/clef.</li>
 	</ul>
 </li>
